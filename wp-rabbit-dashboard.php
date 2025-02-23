@@ -1,0 +1,199 @@
+<?php
+/**
+ * Plugin Name: WP Rabbit Dashboard
+ * Description: Adds a custom dashboard widget and API integration.
+ * Version: 1.4.0
+ * Author: Get Digital Goods
+ * Author URI: https://getdigitalgoods.co.uk
+ */
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+add_action('wp_dashboard_setup', 'custom_dashboard_widget');
+
+function custom_dashboard_widget() {
+    wp_add_dashboard_widget(
+        'custom_widget_id', // Widget ID
+        'Your Website Dashboard!', // Widget Title
+        'custom_dashboard_widget_display' // Callback function to display content
+    );
+}
+
+function custom_dashboard_widget_display() {
+    echo '<h3>WP Rabbit Dashboard!</h3>';
+      echo '<div id="custom-api-data">
+        <p>Loading data...</p>
+    </div>';
+     echo '<hr>';
+    echo '<a href="/video-instructions/" target="_blank" class="button button-primary">Video Instructions</a>';
+     echo '<a href="/blocks/" target="_blank" class="button button-primary">Block Samples</a>';
+      echo '<hr>';
+      echo '<a href="https://getdigitalgoods.co.uk" target="_blank" class="button button-primary">Visit Website</a>';
+      echo '<p>If you need more info please contact me <a href="mailto:getdigitalgoods@gmail.com">getdigitalgoods@gmail.com</a></p>';
+     echo '<hr>';
+}
+
+add_action('wp_dashboard_setup', 'custom_dashboard_widget_to_top');
+
+function custom_dashboard_widget_to_top() {
+    global $wp_meta_boxes;
+
+    $widget = $wp_meta_boxes['dashboard']['normal']['core']['custom_widget_id'];
+    unset($wp_meta_boxes['dashboard']['normal']['core']['custom_widget_id']);
+
+    $wp_meta_boxes['dashboard']['normal']['high']['custom_widget_id'] = $widget;
+}
+
+add_action('admin_head', 'custom_dashboard_widget_styles');
+
+function custom_dashboard_widget_styles() {
+    echo '<style>
+        #custom_widget_id {
+            background:rgb(235, 235, 235);
+            border-left: 2px solid rgb(6, 33, 117);
+             border-bottom: 2px solid rgb(6, 33, 117);
+        }
+        #custom_widget_id .postbox-header {
+        background:rgb(255, 255, 255);
+        }
+        #custom_widget_id h2 {
+            color:rgb(6, 33, 117);
+            font-size:20px;
+            font-weight:900;
+        }
+        #custom_widget_id .button-primary {
+  background:rgb(6, 33, 117);
+  border-color: rgb(6, 33, 117);
+  color: #fff;
+ box-shadow: 1px 1px 1px 1px #00000021;
+  width: fit-content;
+  margin-bottom: 8px;
+  display: block;
+  letter-spacing: 1px;
+  padding: 1px 20px;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-bottom: 1px;
+    padding-left: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+    </style>';
+}
+
+add_action('wp_dashboard_setup', 'add_custom_api_dashboard_widget');
+
+function add_custom_api_dashboard_widget() {
+    wp_add_dashboard_widget('custom_api_widget', 'Live Data from API', 'display_custom_api_widget');
+}
+function display_custom_api_widget() {
+    $client_id = get_option('custom_client_id', 'default-client'); // Store the unique client ID
+    ?>
+   
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const clientID = "<?php echo esc_js($client_id); ?>"; 
+
+        fetch(`https://getdigitalgoods.co.uk/wp-json/custom-api/v1/dashboard-data/?client_id=${clientID}`)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('custom-api-data');
+
+                if (!container) {
+                    console.error("Element with ID 'custom-api-data' not found.");
+                    return;
+                }
+
+                if (data.error) {
+                    container.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                    return;
+                }
+
+                const expiryDate = new Date(data.expiry);
+                const today = new Date();
+
+                if (today > expiryDate) {
+                    container.innerHTML = `<p>No active promotions or messages.</p>`;
+                    return;
+                }
+
+                let content = `
+                 <p><strong>📢 Intro:</strong> ${data.intro || "N/A"}</p>
+                    <p><strong>📢 Message:</strong> ${data.message || "N/A"}</p>
+                    <p><strong>🔥 Promotion:</strong> ${data.promotion || "N/A"}</p>
+                    <p><strong>🔔 Announcement:</strong> ${data.announcement || "N/A"}</p>
+                    <p><strong>⏳ Expires on:</strong> ${data.expiry || "N/A"}</p>
+                `;
+
+                // Helper function to check if a URL is valid
+                const isValidUrl = (string) => {
+                    try {
+                        new URL(string);
+                        return true;
+                    } catch (_) {
+                        return false;
+                    }
+                };
+
+                // Add image if valid
+                if (data.image && isValidUrl(data.image)) {
+                    content += `<p><img src="${data.image}" style="max-width:100%; height:auto;"></p>`;
+                }
+
+                // Add video if valid
+                if (data.video && isValidUrl(data.video)) {
+                    content += `
+                        <video src="${data.video}" id="player" class="js-player" controls 
+                            data-plyr-config='{ "title": "Example Title" }'></video>
+                    `;
+                }
+
+                content += `<p><strong>Last Updated:</strong> ${data.date || "N/A"}</p>`;
+
+                container.innerHTML = content;
+            })
+            .catch(error => {
+                document.getElementById('custom-api-data').innerHTML = '<p style="color:red;">Error fetching data!</p>';
+                console.error("API Fetch Error:", error);
+            });
+    });
+</script>
+    <?php
+}
+
+// Add the widget to the dashboard
+add_action('wp_dashboard_setup', function() {
+    wp_add_dashboard_widget('custom_api_widget', 'Live Data from API', 'display_custom_api_widget');
+});
+
+
+add_action('admin_menu', function() {
+    add_menu_page('Client API Settings', 'API Settings', 'manage_options', 'client-api-settings', 'client_api_settings_page_html');
+});
+
+function client_api_settings_page_html() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    if (isset($_POST['client_id'])) {
+        update_option('custom_client_id', sanitize_text_field($_POST['client_id']));
+        echo '<div class="updated"><p>Client ID updated!</p></div>';
+    }
+
+    $client_id = get_option('custom_client_id', 'default-client');
+    ?>
+
+    <div class="wrap">
+        <h1>Client API Settings</h1>
+        <form method="post">
+            <label><strong>Enter Your Client ID:</strong></label>
+            <input type="text" name="client_id" value="<?php echo esc_attr($client_id); ?>" required>
+            <br><br>
+            <input type="submit" class="button-primary" value="Save">
+        </form>
+    </div>
+    <?php
+}
