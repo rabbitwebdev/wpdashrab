@@ -1,8 +1,9 @@
 <?php
 /**
  * Plugin Name: WP Rabbit Dashboard
+ * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Get Digital Goods
  * Author URI: https://getdigitalgoods.co.uk
  */
@@ -11,6 +12,47 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 add_action('wp_dashboard_setup', 'custom_dashboard_widget');
+
+add_filter('pre_set_site_transient_update_plugins', 'check_for_custom_plugin_update');
+
+function check_for_custom_plugin_update($transient) {
+    if (empty($transient->checked)) {
+        return $transient;
+    }
+
+    // Define your plugin's GitHub repository information
+    $plugin_slug = 'wp-rabbit-dashboard'; // The folder name in wp-content/plugins
+    $github_repo = 'rabbitwebdev/wpdashrab'; // GitHub username/repo
+    $github_api_url = "https://api.github.com/repos/$github_repo/releases/latest";
+
+    // Fetch the latest release from GitHub
+    $response = wp_remote_get($github_api_url, ['headers' => ['User-Agent' => 'WordPress Plugin Updater']]);
+
+    if (is_wp_error($response)) {
+        return $transient; // Exit if error
+    }
+
+    $release = json_decode(wp_remote_retrieve_body($response));
+
+    if (!isset($release->tag_name)) {
+        return $transient; // No version found
+    }
+
+    $latest_version = $release->tag_name;
+    $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin_slug . '/' . $plugin_slug . '.php');
+
+    if (version_compare($plugin_data['Version'], $latest_version, '<')) {
+        $transient->response[$plugin_slug . '/' . $plugin_slug . '.php'] = (object) [
+            'slug'        => $plugin_slug,
+            'new_version' => $latest_version,
+            'package'     => $release->assets[0]->browser_download_url ?? '',
+            'url'         => $release->html_url,
+        ];
+    }
+
+    return $transient;
+}
+
 
 function custom_dashboard_widget() {
     wp_add_dashboard_widget(
