@@ -3,7 +3,7 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 1.5.0
+ * Version: 1.5.3
  * Author: Get Digital Goods
  * Author URI: https://getdigitalgoods.co.uk
  */
@@ -23,7 +23,7 @@ function check_for_custom_plugin_update($transient) {
     // Define your plugin's GitHub repository information
     $plugin_slug = 'wp-rabbit-dashboard'; // The folder name in wp-content/plugins
     $github_repo = 'rabbitwebdev/wpdashrab'; // GitHub username/repo
-    $github_api_url = "https://api.github.com/repos/$github_repo/releases/latest";
+    $github_api_url = "https://github.com/repos/$github_repo/releases/latest";
 
     // Fetch the latest release from GitHub
     $response = wp_remote_get($github_api_url, ['headers' => ['User-Agent' => 'WordPress Plugin Updater']]);
@@ -52,6 +52,10 @@ function check_for_custom_plugin_update($transient) {
 
     return $transient;
 }
+
+add_filter('auto_update_plugin', function ($update, $item) {
+    return ($item->slug === 'wp-rabbit-dashboard') ? true : $update;
+}, 10, 2);
 
 
 function custom_dashboard_widget() {
