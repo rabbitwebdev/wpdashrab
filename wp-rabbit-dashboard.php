@@ -3,9 +3,9 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 1.6.3
- * Author: Get Digital Goods
- * Author URI: https://getdigitalgoods.co.uk
+ * Version: 1.7.0
+ * Author: Rabbit Web Dev
+ * Author URI: https://rabbitwebdesign.co.uk
  */
 
 if (!defined('ABSPATH')) {
