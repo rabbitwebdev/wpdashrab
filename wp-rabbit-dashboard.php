@@ -3,7 +3,7 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 1.7.0
+ * Version: 1.7.5
  * Author: Rabbit Web Dev
  * Author URI: https://rabbitwebdesign.co.uk
  */
@@ -76,7 +76,7 @@ function custom_dashboard_widget_display() {
      echo '<a href="/blocks/" target="_blank" class="button button-primary">Block Samples</a>';
       echo '<hr>';
       echo '<a href="https://rabbitwebdesign.co.uk" target="_blank" class="button button-primary">Visit Website</a>';
-      echo '<p>If you need more info please contact me <a href="mailto:getdigitalgoods@gmail.com">getdigitalgoods@gmail.com</a></p>';
+      echo '<p>If you need more info please contact me <a href="mailto:hey@rabbitwebdesign.co.uk">hey@rabbitwebdesign.co.uk</a></p>';
      echo '<hr>';
 }
 
@@ -97,8 +97,8 @@ function custom_dashboard_widget_styles() {
     echo '<style>
         #custom_widget_id {
             background:rgb(235, 235, 235);
-            border-left: 2px solid rgb(6, 33, 117);
-             border-bottom: 2px solid rgb(6, 33, 117);
+            border-left: 3px solid rgb(6, 33, 117);
+             border-bottom: 3px solid rgb(6, 33, 117);
         }
         #custom_widget_id .postbox-header {
         background:rgb(255, 255, 255);
@@ -112,7 +112,7 @@ function custom_dashboard_widget_styles() {
   background:rgb(6, 33, 117);
   border-color: rgb(6, 33, 117);
   color: #fff;
- box-shadow: 1px 1px 1px 1px #00000021;
+ box-shadow: 1px 1px 2px 1px #00000021;
   width: fit-content;
   margin-bottom: 8px;
   display: block;
