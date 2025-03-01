@@ -3,7 +3,7 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 1.5.3
+ * Version: 1.6.3
  * Author: Get Digital Goods
  * Author URI: https://getdigitalgoods.co.uk
  */
@@ -75,7 +75,7 @@ function custom_dashboard_widget_display() {
     echo '<a href="/video-instructions/" target="_blank" class="button button-primary">Video Instructions</a>';
      echo '<a href="/blocks/" target="_blank" class="button button-primary">Block Samples</a>';
       echo '<hr>';
-      echo '<a href="https://getdigitalgoods.co.uk" target="_blank" class="button button-primary">Visit Website</a>';
+      echo '<a href="https://rabbitwebdesign.co.uk" target="_blank" class="button button-primary">Visit Website</a>';
       echo '<p>If you need more info please contact me <a href="mailto:getdigitalgoods@gmail.com">getdigitalgoods@gmail.com</a></p>';
      echo '<hr>';
 }
@@ -142,7 +142,7 @@ function display_custom_api_widget() {
     document.addEventListener("DOMContentLoaded", function() {
         const clientID = "<?php echo esc_js($client_id); ?>"; 
 
-        fetch(`https://getdigitalgoods.co.uk/wp-json/custom-api/v1/dashboard-data/?client_id=${clientID}`)
+        fetch(`https://rabbitwebdesign.co.uk/wp-json/custom-api/v1/dashboard-data/?client_id=${clientID}`)
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('custom-api-data');
