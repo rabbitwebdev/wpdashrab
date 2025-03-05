@@ -3,7 +3,7 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 2.5.0
+ * Version: 2.8.0
  * Author: Rabbit Web Dev
  * Author URI: https://rabbitwebdesign.co.uk
  */
@@ -96,7 +96,7 @@ add_action('admin_head', 'custom_dashboard_widget_styles');
 function custom_dashboard_widget_styles() {
     echo '<style>
         #custom_widget_id {
-            background:rgb(249, 230, 230);
+            background:rgb(255, 255, 255);
              border: 4px solid rgb(6, 33, 117);
              border-radius: 6px;
              box-shadow: 1px 1px 2px 1px #00000036;
@@ -166,13 +166,19 @@ function display_custom_api_widget() {
                     return;
                 }
 
+               
+
                 let content = `
                  <p><strong>📢 Intro:</strong> ${data.intro || "N/A"}</p>
                     <p><strong>📢 Message:</strong> ${data.message || "N/A"}</p>
                     <p><strong>🔥 Promotion:</strong> ${data.promotion || "N/A"}</p>
-                    <p><strong>🔔 Announcement:</strong> ${data.announcement || "N/A"}</p>
                     <p><strong>⏳ Expires on:</strong> ${data.expiry || "N/A"}</p>
                 `;
+
+                  // Add image if valid
+                  if (data.announcement) {
+                   let content = `<p><strong>🔔 Announcement:</strong> ${data.announcement}</p>`;
+                }
 
                 // Helper function to check if a URL is valid
                 const isValidUrl = (string) => {
