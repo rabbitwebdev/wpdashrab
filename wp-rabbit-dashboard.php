@@ -3,7 +3,7 @@
  * Plugin Name: WP Rabbit Dashboard
  * Plugin URI: https://github.com/rabbitwebdev/wpdashrab
  * Description: Adds a custom dashboard widget and API integration.
- * Version: 3.0.2
+ * Version: 3.1.0
  * Author: Rabbit Web Dev
  * Author URI: https://rabbitwebdesign.co.uk
  */
@@ -67,7 +67,7 @@ function custom_dashboard_widget() {
 }
 
 function custom_dashboard_widget_display() {
-    echo '<h3>WP Rabbit Dashboard!</h3>';
+    echo '<h3 class="sub-head">WP Rabbit Dashboard!</h3>';
       echo '<div id="custom-api-data">
         <p>Loading data...</p>
     </div>';
@@ -102,12 +102,21 @@ function custom_dashboard_widget_styles() {
              box-shadow: 1px 1px 2px 1px #00000036;
         }
         #custom_widget_id .postbox-header {
-        background:rgb(255, 255, 255);
+        background:rgb(6, 33, 117);
         }
         #custom_widget_id h2 {
-            color:rgb(6, 33, 117);
+            color:rgb(255, 255, 255);
             font-size:20px;
-            font-weight:900;
+            font-weight:600;
+        }
+             #custom_widget_id h3.sub-head {
+            font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  border-bottom: 1px solid #c6c6c6;
+  padding: 5px 0;
         }
         #custom_widget_id .button-primary {
   background:rgb(6, 33, 117);
